@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cấu Hình LED WS2812B</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; padding: 20px; }
+        input, select, button { margin: 10px; padding: 10px; font-size: 16px; }
+        .container { max-width: 400px; margin: auto; }
+    </style>
+</head>
+<body>
+
+    <h2>Cấu Hình LED WS2812B</h2>
+
+    <div class="container">
+        <label>SSID WiFi:</label>
+        <input type="text" id="ssid" placeholder="Nhập SSID" value="MyWiFi"><br>
+
+        <label>Password WiFi:</label>
+        <input type="password" id="password" placeholder="Nhập Password" value="12345678"><br>
+
+        <label>Loại LED:</label>
+        <select id="ledType">
+            <option value="WS2812B">WS2812B</option>
+        </select><br>
+
+        <label>Số hàng:</label>
+        <input type="number" id="rows" min="6" max="16" value="6" onchange="updateLEDCount()"><br>
+
+        <label>Số cột:</label>
+        <input type="number" id="cols" min="24" max="64" step="2" value="24" onchange="updateLEDCount()"><br>
+
+        <label>Số LED:</label>
+        <input type="number" id="numLEDs" readonly><br>
+
+        <label>Tốc độ update (ms):</label>
+        <input type="number" id="updateSpeed" value="50"><br>
+
+        <label>Hiệu ứng:</label>
+        <select id="effect">
+            <option value="effect1.txt">Hiệu ứng 1</option>
+            <option value="effect2.txt">Hiệu ứng 2</option>
+        </select><br>
+
+        <button onclick="saveConfig()">Tải file cấu hình</button>
+    </div>
+
+    <script>
+        function updateLEDCount() {
+            let rows = parseInt(document.getElementById("rows").value);
+            let cols = parseInt(document.getElementById("cols").value);
+            document.getElementById("numLEDs").value = rows * cols;
+        }
+
+        function saveConfig() {
+            let config = {
+                ssid: document.getElementById("ssid").value,
+                password: document.getElementById("password").value,
+                ledType: document.getElementById("ledType").value,
+                rows: parseInt(document.getElementById("rows").value),
+                cols: parseInt(document.getElementById("cols").value),
+                numLEDs: parseInt(document.getElementById("numLEDs").value),
+                updateSpeed: parseInt(document.getElementById("updateSpeed").value),
+                effect: document.getElementById("effect").value
+            };
+
+            let blob = new Blob([JSON.stringify(config, null, 2)], { type: "application/json" });
+            let link = document.createElement("a");
+            link.href = URL.createObjectURL(blob);
+            link.download = "led_config.json";
+            link.click();
+        }
+
+        // Khởi động
+        updateLEDCount();
+    </script>
+
+</body>
+</html>
